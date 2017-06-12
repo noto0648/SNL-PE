@@ -19,14 +19,14 @@ namespace SilverNBTLibrary.PE.LevelDB
 
         /* bytearray */
         [DllImport("leveldb.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void leveldb_put(IntPtr db, IntPtr writeOptions, byte key, UIntPtr keyLength, byte value, UIntPtr valueLength, out IntPtr error);
+        public static extern void leveldb_put(IntPtr db, IntPtr writeOptions, byte[] key, UIntPtr keyLength, byte[] value, UIntPtr valueLength, out IntPtr error);
 
         [DllImport("leveldb.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void leveldb_delete(IntPtr db, IntPtr writeOptions, string key, UIntPtr keylen, out IntPtr error);
 
         /* bytearray */
         [DllImport("leveldb.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void leveldb_delete(IntPtr db, IntPtr writeOptions, byte key, UIntPtr keylen, out IntPtr error);
+        public static extern void leveldb_delete(IntPtr db, IntPtr writeOptions, byte[] key, UIntPtr keylen, out IntPtr error);
 
         [DllImport("leveldb.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void leveldb_write(IntPtr db, IntPtr writeOptions, IntPtr writeBatch, out IntPtr error);
@@ -36,7 +36,7 @@ namespace SilverNBTLibrary.PE.LevelDB
 
         /* bytearray */
         [DllImport("leveldb.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr leveldb_get(IntPtr db, IntPtr readOptions, byte key, UIntPtr keyLength, out UIntPtr valueLength, out IntPtr error);
+        public static extern IntPtr leveldb_get(IntPtr db, IntPtr readOptions, byte[] key, UIntPtr keyLength, out UIntPtr valueLength, out IntPtr error);
 
         [DllImport("leveldb.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr leveldb_create_iterator(IntPtr db, IntPtr readOptions);
@@ -213,7 +213,7 @@ namespace SilverNBTLibrary.PE.LevelDB
         public static void Put(IntPtr db, IntPtr writeOptions, byte[] key, byte[] value)
         {
             IntPtr error;
-            leveldb_put(db, writeOptions, key[0], (UIntPtr)key.Length, value[0], (UIntPtr)value.Length, out error);
+            leveldb_put(db, writeOptions, key, (UIntPtr)key.Length, value, (UIntPtr)value.Length, out error);
             ThrowError(error);
         }
 
@@ -235,7 +235,7 @@ namespace SilverNBTLibrary.PE.LevelDB
         {
             UIntPtr valueLength;
             IntPtr error;
-            var valuePtr = leveldb_get(db, readOptions, key[0], (UIntPtr)key.Length, out valueLength, out error);
+            var valuePtr = leveldb_get(db, readOptions, key, (UIntPtr)key.Length, out valueLength, out error);
             if (valuePtr == IntPtr.Zero || valueLength == UIntPtr.Zero)
                 return null;
             ThrowError(error);
@@ -248,7 +248,7 @@ namespace SilverNBTLibrary.PE.LevelDB
         public static void Delete(IntPtr db, IntPtr writeOptions, byte[] key)
         {
             IntPtr error;
-            leveldb_delete(db, writeOptions, key[0], (UIntPtr)key.Length, out error);
+            leveldb_delete(db, writeOptions, key, (UIntPtr)key.Length, out error);
             ThrowError(error);
         }
 
